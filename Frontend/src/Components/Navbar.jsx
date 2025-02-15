@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,8 +46,8 @@ const Navbar = () => {
             </button>
             {dropdown === 'User' && (
               <ul className="absolute left-0 mt-2 w-40 bg-white text-black rounded shadow-lg">
-                <li className="p-2 hover:bg-gray-200">Sign Up</li>
-                <li className="p-2 hover:bg-gray-200">Login</li>
+                <li className="p-2 hover:bg-gray-200"><Link to="/register">Sign Up</Link></li>
+                <li className="p-2 hover:bg-gray-200"><Link to="/register">Log in</Link></li>
                 <li className="p-2 hover:bg-gray-200">Logout</li>
               </ul>
             )}

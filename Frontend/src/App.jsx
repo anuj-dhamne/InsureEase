@@ -1,31 +1,34 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
-import { Navbar } from './Components'
-import Part1 from './Components/Part1'
-import Plans from './Components/Plans'
-import HowItWorks from './Components/HowItWorks'
-import WhyInsureEase from './Components/WhyInsureEase'
-import CoreFunc from './Components/CoreFunc'
-import Calculators from './Components/Calculators'
-import Footer from './Components/Footer'
-import FAQ from './Components/FAQ'
-
+import Home from './pages/Home'
+import { createBrowserRouter, RouterProvider } from 'react-router'
+import { createRoot } from 'react-dom/client'
+import { Login, Register } from './Components'
 function App() {
-
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: "",
+      children: [
+        {
+          path: "",
+          element: <Home />
+        },
+        {
+          path: "login",
+          element: <Login/>
+        },
+        {
+          path: "register",
+          element: <Register/>
+        },
+       
+      ]
+    }
+  ])
   return (
-  <>
-  <Navbar/>
-  <Part1/>
-  <Plans/>
-  <HowItWorks/>
-  <WhyInsureEase/>
-  <CoreFunc/>
-  <Calculators/>
-  <FAQ/>
-  <Footer/>
-  </>
+    <RouterProvider router={router}>
+    <Home/>
+  </RouterProvider>
   )
 }
 
