@@ -1,5 +1,5 @@
 import React from 'react'
-import {Navbar,Part1,Plans,HowItWorks,WhyInsureEase,CoreFunc,Calculators,FAQ,Footer} from "../Components/index.js"
+import {Navbar,Part1,Plans,HowItWorks,WhyInsureEase,CoreFunc,Calculators,FAQ,Footer,Chatbot} from "../Components/index.js"
 
 function Home() {
   return (
@@ -13,6 +13,7 @@ function Home() {
     <Calculators/>
     <FAQ/>
     <Footer/>
+    <Chatbot />
     </>
   )
 }
