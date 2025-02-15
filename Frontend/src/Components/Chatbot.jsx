@@ -43,7 +43,7 @@ const Chatbot = () => {
 
       {/* Chatbot Sliding Panel */}
       <div
-        className={`fixed top-0 right-0 h-full w-[80%] md:w-[40%] bg-white shadow-lg border-l border-gray-300 transition-transform duration-300 transform ${
+        className={`fixed top-0 right-0 h-full w-[80%] md:w-[25%] bg-white shadow-lg border-l border-gray-300 transition-transform duration-300 transform ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -56,7 +56,7 @@ const Chatbot = () => {
         </div>
 
         {/* Chatbot Message Area */}
-        <div className="p-4 h-[75%] overflow-y-auto border-b">
+        <div className="p-4 h-[75%] overflow-y-auto border-b scrollbar-hide">
           {messages.map((msg, index) => (
             <div
               key={index}
@@ -83,6 +83,12 @@ const Chatbot = () => {
           </button>
         </div>
       </div>
+
+      {/* Tailwind Utility Class to Hide Scrollbar */}
+      <style>{`
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
     </div>
   );
 };
