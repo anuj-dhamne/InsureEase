@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
+import axios from "axios"
 const Login = ({ onSwitch }) => {
   const [credentials, setCredentials] = useState({
     username: "",
@@ -14,12 +15,29 @@ const Login = ({ onSwitch }) => {
     setCredentials({ username: "", password: "" });
   };
 
-  const handleLogin = () => {
+  const handleLogin = async(e) => {
+    e.preventDefault();
     if (!credentials.username || !credentials.password) {
       alert("Please enter username and password.");
       return;
     }
-    alert(`Welcome back, ${credentials.username}!`);
+
+    try {
+        const response= await axios.post("http://localhost:3000/api/v1/users/login",credentials, 
+          {
+            withCredentials:true
+          }
+        );
+        
+        console.log("Login Successful:", response.data);
+        alert("Used Logged in Successfully !")
+        navigate("/");
+    } catch (error) {
+        console.log(error.response?.data || "Error in Login");
+    }
+
+
+    // alert(`Welcome back, ${credentials.username}!`);
   };
 
   return (
@@ -69,7 +87,7 @@ const Login = ({ onSwitch }) => {
         <p className="text-sm text-center mt-4">
           Don't have an account?{" "}
           <button onClick={onSwitch} className="text-blue-600 hover:underline">
-          <Link to="/login">Sign Up</Link>
+          <Link to="/register">Sign Up</Link>
           </button>
         </p>
       </div>

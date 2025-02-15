@@ -32,13 +32,6 @@ const userSchema=new mongoose.Schema({
         type:String,
         required:[true,"Password is Required"],
     },
-    budgetAmount:{
-        type:Number,
-        required:true,
-    },
-    expendAmount:{
-        type:Number,
-    },
     refreshToken:{
         type:String,
     }

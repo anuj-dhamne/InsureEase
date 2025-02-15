@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"
 
 const Register = ({ onSwitch }) => {
     const navigate=useNavigate();
   const [formData, setFormData] = useState({
     username: "",
-    fullname: "",
+    name: "",
     email: "",
     password: "",
-    avatar: null,
+    avator: null,
   });
 
   const handleChange = (e) => {
@@ -18,26 +19,49 @@ const Register = ({ onSwitch }) => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0]; // Get selected file
-    setFormData({ ...formData, avatar: file });
+    setFormData({ ...formData, avator: file });
   };
 
   const handleReset = () => {
     setFormData({
       username: "",
-      fullname: "",
+      name: "",
       email: "",
       password: "",
-      avatar: null,
+      avator: null,
     });
     document.getElementById("fileInput").value = ""; // Reset file input
   };
 
-  const handleRegister = () => {
-    if (!formData.username || !formData.fullname || !formData.email || !formData.password || !formData.avatar) {
+  const handleRegister = async(e) => {
+    e.preventDefault();
+    if (!formData.username || !formData.name || !formData.email || !formData.password || !formData.avator) {
       alert("Please fill in all fields and upload a file.");
       return;
     }
-    alert(`User Registered: ${formData.username}`);
+    try {
+        const fd=new FormData();
+        fd.append("username",formData.username);
+        fd.append("name",formData.name);
+        fd.append("email",formData.email);
+        fd.append("password",formData.password);
+        fd.append("avator",formData.avator);
+        // http://localhost:3000/api/v1/users
+
+        const res= await axios.post("http://localhost:3000/api/v1/users/register",formData,
+            {
+                headers:{
+                    "Content-Type": "multipart/form-data",
+                }
+            }
+        );z
+        console.log(res.data);
+        alert("Used Registeration suceessfully ! ")
+        navigate("/login");
+    } catch (error) {
+        console.log(error.response?.data || "Error in registration");
+    }
+    // alert(`User Registered: ${formData.username}`);
   };
 
   return (
@@ -61,8 +85,8 @@ const Register = ({ onSwitch }) => {
           <label className="block text-gray-700 font-medium mb-1">Full Name</label>
           <input
             type="text"
-            name="fullname"
-            value={formData.fullname}
+            name="name"
+            value={formData.name}
             onChange={handleChange}
             className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
             placeholder="Enter your full name"

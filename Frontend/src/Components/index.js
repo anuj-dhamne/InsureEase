@@ -11,7 +11,6 @@ import Part1 from "./Part1";
 import Plans from "./Plans";
 import WhyInsureEase from "./WhyInsureEase";
 import Register from "./Register";
-import Chatbot from "./Chatbot";
 
 export {
     Navbar,
@@ -27,5 +26,4 @@ export {
     Plans,
     WhyInsureEase,
     Register,
-    Chatbot
 }

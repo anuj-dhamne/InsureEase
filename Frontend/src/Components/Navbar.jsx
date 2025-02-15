@@ -47,7 +47,7 @@ const Navbar = () => {
             {dropdown === 'User' && (
               <ul className="absolute left-0 mt-2 w-40 bg-white text-black rounded shadow-lg">
                 <li className="p-2 hover:bg-gray-200"><Link to="/register">Sign Up</Link></li>
-                <li className="p-2 hover:bg-gray-200"><Link to="/register">Log in</Link></li>
+                <li className="p-2 hover:bg-gray-200"><Link to="/login">Log in</Link></li>
                 <li className="p-2 hover:bg-gray-200">Logout</li>
               </ul>
             )}
