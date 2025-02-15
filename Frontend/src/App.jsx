@@ -11,6 +11,7 @@ import CoreFunc from './Components/CoreFunc'
 import Calculators from './Components/Calculators'
 import Footer from './Components/Footer'
 import FAQ from './Components/FAQ'
+import Chatbot from './Components/Chatbot';
 
 function App() {
 
@@ -25,7 +26,9 @@ function App() {
   <Calculators/>
   <FAQ/>
   <Footer/>
+  <Chatbot />
   </>
+  
   )
 }
 
