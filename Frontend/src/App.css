@@ -1,0 +1,14 @@
+/* Hide scrollbar but allow scrolling */
+body {
+    overflow: auto;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+  
