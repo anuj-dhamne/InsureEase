@@ -54,9 +54,9 @@ const Register = ({ onSwitch }) => {
                     "Content-Type": "multipart/form-data",
                 }
             }
-        );z
-        console.log(res.data);
+        );
         alert("Used Registeration suceessfully ! ")
+        console.log(res.data);
         navigate("/login");
     } catch (error) {
         console.log(error.response?.data || "Error in registration");

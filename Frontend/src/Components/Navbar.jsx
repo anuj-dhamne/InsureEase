@@ -36,9 +36,8 @@ const Navbar = () => {
           ))}
           {/* link tag to be added */}
            <li>
-            <a href="/#" className="hover:underline p-2 block">
-              Vault
-            </a>
+           <Link className="hover:underline p-2 block" to="/vault"> Vault
+           </Link>
           </li>
           <li className="relative">
             <button onClick={() => toggleDropdown('User')} className="hover:underline p-2">

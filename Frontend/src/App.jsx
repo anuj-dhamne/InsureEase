@@ -17,6 +17,7 @@ import InvestmentInsurance from "./pages/invest";
 import EmployeeHealthInsurance from "./pages/employeehealth";
 import ChildSavingsInsurance from "./pages/childsaving";
 import RetirementInsurance from "./pages/retirementinsurance";
+import Vault from './pages/Vault'
 function App() {
   const router = createBrowserRouter([
     {
@@ -95,6 +96,10 @@ function App() {
           path: "/insurance/retirement",  
           element:<RetirementInsurance/>,
         },
+        {
+          path :"/vault",
+          element:<Vault/>
+        }
         
 
       ]
