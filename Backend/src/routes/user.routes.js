@@ -12,10 +12,10 @@ import {
    userRegister
          } from "../controllers/user.controller.js";
 
-const router=Router();
+const userRouter=Router();
 
 //  register route
-router.route("/register").post(
+userRouter.route("/register").post(
     upload.fields([{
         name:"avator",
         maxCount:1
@@ -23,27 +23,27 @@ router.route("/register").post(
     userRegister);
 
 // login route
-router.route("/login").post(loginUser)
+userRouter.route("/login").post(loginUser)
 
 // logout route
-router.route("/logout").post(verifyJWT,logoutUser)
+userRouter.route("/logout").post(verifyJWT,logoutUser)
 
 // refresh token route
-router.route("/refresh-token").post(refreshAccessToken)
+userRouter.route("/refresh-token").post(refreshAccessToken)
 
 // change password route
-router.route("/change-password").post(verifyJWT, changeCurrentPassword)
+userRouter.route("/change-password").post(verifyJWT, changeCurrentPassword)
 
 // get current user route
-router.route("/current-user").get(verifyJWT, getCurrentUser)
+userRouter.route("/current-user").get(verifyJWT, getCurrentUser)
 
 // update user detail route
-router.route("/update-details").patch(verifyJWT, updateAccountDetails)
+userRouter.route("/update-details").patch(verifyJWT, updateAccountDetails)
 
 // update avator route
-router.route("/update-avator").patch(verifyJWT, upload.single("avator"), updateAvator);
+userRouter.route("/update-avator").patch(verifyJWT, upload.single("avator"), updateAvator);
 
 
 
-export default router
+export default userRouter
 

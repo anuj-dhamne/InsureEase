@@ -17,4 +17,10 @@ app.use(cookieParser())
 //user route imports 
 import userRouter from "./routes/user.routes.js"
 app.use("/api/v1/users",userRouter)
+
+// policy route import
+import policyRouter from "./routes/policy.routes.js";
+app.use("/api/v1/users/policies",policyRouter)
+
+
 export{app};
