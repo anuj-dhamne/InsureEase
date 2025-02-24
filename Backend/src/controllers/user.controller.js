@@ -27,10 +27,10 @@ const generateAccessAndRefreshToken=async(userId)=>{
 const userRegister=asyncHandler(async (req,res)=>{
 
     // getting user data
-    const {name,username,email,password,budgetAmount,expendAmount}=req.body;
+    const {name,username,email,phone,password}=req.body;
 
     // validate data
-    if([name,username,email,password,budgetAmount,expendAmount].some((field)=>field?.trim()==="")){
+    if([name,username,email,password,phone].some((field)=>field?.trim()==="")){
         throw new ApiError(400,"Fields are required")
     }
 
@@ -39,7 +39,7 @@ const userRegister=asyncHandler(async (req,res)=>{
         $or:[{username},{email}]
     })
     if(existedUser){
-        throw new ApiError(400,"username alraedy exists with this email or username");
+        throw new ApiError(400,"username already exists with this email or username");
     }
 
     // Uploading profile picture
@@ -57,10 +57,10 @@ const userRegister=asyncHandler(async (req,res)=>{
         name,
         email,
         username:username.toLowerCase(),
+        phone,
         password,
         avator:avator.url,
-        budgetAmount,
-        expendAmount,
+       
     })
     // removing password and refreshtoken fro sending response
 
@@ -134,44 +134,11 @@ const logoutUser=asyncHandler(async(req,res)=>{
     .json(new ApiResponse(200,{},"User Logout Successfully !"));
 })
 
-const updateBudget=asyncHandler(async(req,res)=>{
-    const {budgetAmount}=req.body;
-    console.log("Request Body:", req.body);
-
-  if(!budgetAmount){
-    throw new ApiError(400,"All fields are required ! ");
-  }
-  if (typeof(budgetAmount) === "string") {
-    budgetAmount = Number(budgetAmount);
-  }
-  if (isNaN(budgetAmount) || typeof (budgetAmount) !== "number") {
-    throw new ApiError(400,"Invalid budget Amount")
-  }
-  const user =await User.findByIdAndUpdate(
-    req.user._id,
-    {
-      $set:{
-        budgetAmount
-      }
-    },
-    {
-      new :true
-    }
-
-  ).select("-password");
-
-  return res.status(200)
-            .json(new ApiResponse(
-              200,
-              user,
-              "Details updated Successfully "
-            ))
-})
 
 const updateAccountDetails=asyncHandler(async(req,res)=>{
-    const {name,email}=req.body;
+    const {name,email,phone}=req.body;
 
-  if(!name ||!email){
+  if(!(name && phone && email)){
     throw new ApiError(400,"All fields are required ! ");
   }
 
@@ -179,7 +146,7 @@ const updateAccountDetails=asyncHandler(async(req,res)=>{
     req.user._id,
     {
       $set:{
-        name,email
+        name,email,phone
       }
     },
     {
@@ -224,7 +191,7 @@ const getCurrentUser=asyncHandler(async (req,res)=>{
     return res.status(200).json(new ApiResponse(200 ,req.user,"current user fetched successfully"));
    })
 
-   const changeCurrentPassword=asyncHandler(async (req,res)=>{
+const changeCurrentPassword=asyncHandler(async (req,res)=>{
     const {oldPassword,newPassword}=req.body;
   
     const user=await User.findById(req.user?._id)
@@ -240,7 +207,6 @@ const getCurrentUser=asyncHandler(async (req,res)=>{
   return res.status(200).json(new ApiResponse (200,{},"Password Change Successfully ! "))
     
   })
-
   const refreshAccessToken = asyncHandler(async (req,res)=>{
     
     const incomingRefreshToken=req.cookies.refreshToken || req.body.refreshToken;
@@ -289,7 +255,6 @@ const getCurrentUser=asyncHandler(async (req,res)=>{
 export {userRegister,
     loginUser,
     logoutUser,
-    updateBudget,
     updateAccountDetails,
     updateAvator,
     getCurrentUser,

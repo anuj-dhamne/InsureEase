@@ -1,4 +1,3 @@
-
 import {Router} from "express"
 import {upload} from "../middlewares/multer.middleware.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js"
@@ -10,7 +9,6 @@ import {
     refreshAccessToken,
     updateAccountDetails,
     updateAvator,
-   updateBudget,
    userRegister
          } from "../controllers/user.controller.js";
 
@@ -32,7 +30,7 @@ router.route("/logout").post(verifyJWT,logoutUser)
 
 // refresh token route
 router.route("/refresh-token").post(refreshAccessToken)
-/*
+
 // change password route
 router.route("/change-password").post(verifyJWT, changeCurrentPassword)
 
@@ -45,8 +43,7 @@ router.route("/update-details").patch(verifyJWT, updateAccountDetails)
 // update avator route
 router.route("/update-avator").patch(verifyJWT, upload.single("avator"), updateAvator);
 
-// update budget route
-router.route("/update-budget").patch(verifyJWT, updateBudget)
-*/
+
+
 export default router
 
