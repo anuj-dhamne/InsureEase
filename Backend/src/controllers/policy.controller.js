@@ -2,17 +2,23 @@ import { Policy } from "../models/policy.model.js";
 import {asyncHandler} from "../utils/asyncHandler.js"
 import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
+import { User } from "../models/user.model.js";
 
 const createPolicy= asyncHandler(async(req,res)=>{
-    const user_id=req._id;
-    const {name,category,provider,premium,tenure,feature,requiredDocuments,termsAndConditions}=req.body;
+    const user=req.user._id;
+    // const user_data=await User.findById(user);
+    // const user_name=user_data;
+    const {name,category,provider,premium,tenure,features,requiredDocuments,termsAndConditions}=req.body;
 
-    if([name,category,premium,provider,tenure,termsAndConditions].map((field)=>{
+    if([name,category,provider,termsAndConditions].map((field)=>{
         if(field.trim()===""){
             throw new ApiError(400,"All Fields are Required ! ");
         }
     }))
-    if(feature.length<1 || requiredDocuments.length<1){
+    if(premium===0 || tenure===0){
+        throw new ApiError(400,"premium and tenure not ne zero");
+    }
+    if(features.length<1 || requiredDocuments.length<1){
         throw new ApiError(400,"All Fields are Required ! ");
     }
 
@@ -20,10 +26,10 @@ const createPolicy= asyncHandler(async(req,res)=>{
         name,
         category,
         provider,
-        provider_id:user_id,
+        provider_id:user,
         premium,
         tenure,
-        feature,
+        features,
         requiredDocuments,
         termsAndConditions,
     })
@@ -54,8 +60,8 @@ const getAllPolicies=asyncHandler(async(req,res)=>{
     .json(new ApiResponse(200,allPolicies,"all policies "))
 })
 
-const getPolicyofUser=asyncHandler(async(req,res)=>{
-    const user=req._id;
+const getPolicyofAdmin=asyncHandler(async(req,res)=>{
+    const user=req.user._id;
     if(!user){
         throw ApiError(400,"Unauthorised request ! ");
     }
@@ -84,21 +90,24 @@ const policyId=req.params.id;
 if(!policyId){
     throw new ApiError(400,"Unauthorised request !");
 }
-const {name,premium,tenure,feature,requiredDocuments,termsAndConditions} =req.body;
+const {name,premium,tenure,features,requiredDocuments,termsAndConditions} =req.body;
 
-if([name,premium,tenure,termsAndConditions].map((field)=>{
+if([name,termsAndConditions].map((field)=>{
     if(field.trim()===""){
         throw new ApiError(400,"All Fields are Required ! ");
     }
 }))
-if(feature.length<1 || requiredDocuments.length<1){
+if(premium===0 || tenure===0){
+    throw new ApiError(400,"premium and tenure not ne zero");
+}
+if(features.length<1 || requiredDocuments.length<1){
     throw new ApiError(400,"All Fields are Required ! ");
 }
 
 const updatedPolicy=await Policy.findByIdAndUpdate(
     policyId,
     {
-        $set:{name,premium,tenure,feature,requiredDocuments,termsAndConditions}
+        $set:{name,premium,tenure,features,requiredDocuments,termsAndConditions}
     },
     {
         new:true
@@ -107,8 +116,8 @@ const updatedPolicy=await Policy.findByIdAndUpdate(
 if(!updatedPolicy){
     throw ApiError(500,"Something went wrong ! ");
 }
-return res.status(200).json(200,updatedPolicy,"Policy get Updated");
+return res.status(200).json(new ApiResponse(200,updatedPolicy,"Policy get Updated"));
 
 })
 
-export {createPolicy,getAllPolicies,getSinglePolicy,updatePolicy,getPolicyofUser}
+export {createPolicy,getAllPolicies,getSinglePolicy,updatePolicy,getPolicyofAdmin}

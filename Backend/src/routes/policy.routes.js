@@ -1,6 +1,6 @@
 import {Router} from "express"
 import { verifyJWT } from "../middlewares/auth.middleware.js"
-import { createPolicy, getAllPolicies, getPolicyofUser, getSinglePolicy, updatePolicy } from "../controllers/policy.controller.js";
+import { createPolicy, getAllPolicies, getPolicyofAdmin, getSinglePolicy, updatePolicy } from "../controllers/policy.controller.js";
 
 const policyRouter=Router();
 
@@ -9,14 +9,14 @@ const policyRouter=Router();
 policyRouter.route("/create-policy").post(verifyJWT,createPolicy)
 
 // get all policy route
-policyRouter.route("/all-policies").get(verifyJWT,getAllPolicies)
+policyRouter.route("/all-policies").get(getAllPolicies)
 
 // get policy for a specific user route
-policyRouter.route("/user-all-policies").get(verifyJWT,getPolicyofUser)
+policyRouter.route("/admin-all-policies").get(verifyJWT,getPolicyofAdmin)
 
 // get current policy route
-policyRouter.route("/single-policy").get(verifyJWT,getSinglePolicy)
+policyRouter.route("/single-policy/:id").get(getSinglePolicy)
 
 // update policy info ...
-policyRouter.route("/update-policy").patch(verifyJWT,updatePolicy);
+policyRouter.route("/update-policy/:id").patch(verifyJWT,updatePolicy);
 export default policyRouter;

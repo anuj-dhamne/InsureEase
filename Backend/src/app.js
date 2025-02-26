@@ -1,6 +1,8 @@
 import express from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser"
+import "./utils/reminderCron.js"; 
+
 const app= express();
 
 app.use(cors({
@@ -21,6 +23,14 @@ app.use("/api/v1/users",userRouter)
 // policy route import
 import policyRouter from "./routes/policy.routes.js";
 app.use("/api/v1/users/policies",policyRouter)
+
+// documnet route import
+import documentRouter from "./routes/document.routes.js";
+app.use("/api/v1/users/document",documentRouter);
+
+// reminder route import
+import reminderRouter from "./routes/reminder.routes.js";
+app.use("/api/v1/users/reminder",reminderRouter);
 
 
 export{app};
