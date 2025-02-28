@@ -1,11 +1,11 @@
 import {Router} from "express"
 import { verifyJWT } from "../middlewares/auth.middleware.js"
-import { checkAndSendReminder, createRemider, getUserReminder } from "../controllers/reminder.controller.js";
+import { checkAndSendReminder, getUserReminder } from "../controllers/reminder.controller.js";
 
 const reminderRouter=new Router();
 
 // create reminder route
-reminderRouter.route("/create-reminder").post(createRemider);
+// reminderRouter.route("/create-reminder").post(createReminder);
 
 // get all reminder route
 reminderRouter.route("/all-reminders").get(verifyJWT,getUserReminder);

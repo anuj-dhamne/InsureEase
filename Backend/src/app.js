@@ -32,5 +32,16 @@ app.use("/api/v1/users/document",documentRouter);
 import reminderRouter from "./routes/reminder.routes.js";
 app.use("/api/v1/users/reminder",reminderRouter);
 
+// purchase route import 
+import purchaseRouter from "./routes/purchase.routes.js";
+app.use("/api/v1/users/purchase",purchaseRouter);
+
+// claim route import 
+import claimRouter from "./routes/claim.routes.js";
+app.use("/api/v1/users/claim",claimRouter);
+
+// Ai features policy route
+import policyRoutes from "./routes/policyRoutes.js"
+app.use("/api/v1/users/ai-policy",policyRoutes);
 
 export{app};

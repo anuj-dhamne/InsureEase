@@ -4,33 +4,33 @@ import {asyncHandler} from "../utils/asyncHandler.js"
 import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import sendEmail from "../utils/sendEmail.js"
-import corn from "node-cron"
+// import corn from "node-cron"
 
 // Creating reminder 
-const createRemider =asyncHandler(async(req,res)=>{
-    const {userId,policyId,renewalDate}=req.body;
-    if(!userId || !policyId ||!renewalDate){
-        throw new ApiError(400,"Field required in createreminder function !");
+const createReminder = async (userId, policyId, renewalDate) => {
+    if (!userId || !policyId || !renewalDate) {
+        throw new ApiError(400, "Fields required in createReminder function!");
     }
+
     const reminderDate = new Date(renewalDate);
     reminderDate.setDate(reminderDate.getDate() - 7); // Set reminder 7 days before renewal
 
-    if(!reminderDate){
-    throw new ApiError(500,"Date not created !");
-    }
-    // const reminder = new Reminder({ userId, policyId, reminderDate });
-    // await reminder.save();
-    const reminder = await Reminder.create(
-        {
-            userId,policyId,reminderDate
-        }
-    )
-    if(!reminder){
-        throw new ApiError(500,"Reminder is not created ! ");
+    if (!reminderDate) {
+        throw new ApiError(500, "Date not created!");
     }
 
-    res.status(201).json(new ApiResponse(200,reminder,"The reminder created successfully ! "));
-})
+    const reminder = await Reminder.create({
+        userId,
+        policyId,
+        reminderDate,
+    });
+
+    if (!reminder) {
+        throw new ApiError(500, "Reminder is not created!");
+    }
+
+    return reminder;
+};
 
 // check and submit reminder 
 const checkAndSendReminder=asyncHandler(async(req,res)=>{
@@ -69,4 +69,4 @@ const deleteReminder=asyncHandler(async(req,res)=>{
 
 })
 
-export {createRemider,checkAndSendReminder,getUserReminder};
+export {createReminder,checkAndSendReminder,getUserReminder};
