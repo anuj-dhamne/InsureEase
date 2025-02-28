@@ -38,10 +38,10 @@ const userRegister=asyncHandler(async (req,res)=>{
     const existedUser=await User.findOne({
         $or:[{username},{email}]
     })
-    if(existedUser){
+    if(!existedUser){
         throw new ApiError(400,"username already exists with this email or username");
     }
-
+/*
     // Uploading profile picture
     const avatorLocalPath=req.files?.avator?.[0]?.path;
     if(!avatorLocalPath)
@@ -51,7 +51,7 @@ const userRegister=asyncHandler(async (req,res)=>{
     const avator=await uploadOnCloudinary(avatorLocalPath);
 
     if(!avator){throw new ApiError(400,"Avator file required")};
-
+*/
     // creating user Object and upload entry in DB
     const user=await User.create({
         name,
@@ -59,9 +59,12 @@ const userRegister=asyncHandler(async (req,res)=>{
         username:username.toLowerCase(),
         phone,
         password,
-        avator:avator.url,
+        // avator:avator.url,
        
     })
+        
+
+
     // removing password and refreshtoken fro sending response
 
     const createdUser=await User.findById(user._id).select("-password -refreshToken") ;

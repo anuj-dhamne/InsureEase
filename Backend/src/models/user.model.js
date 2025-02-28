@@ -24,10 +24,10 @@ const userSchema=new mongoose.Schema({
         unique:true,
         trim:true
     },
-    avator:{
-        type:String,
-        required:true
-    },
+    // avator:{
+    //     type:String,
+    //     required:true
+    // },
     phone:{
         type:String,
         required:true
