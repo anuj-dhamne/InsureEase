@@ -1,0 +1,22 @@
+# Node.js dependencies
+node_modules/
+.npm/
+
+# Next.js build output
+.next/
+out/
+
+# Environment files
+.env
+.env.local
+
+# Logs
+*.log
+yarn-error.log
+npm-debug.log
+
+# Python virtual environment
+venv/
+__pycache__/
+*.pyc
+*.pyo
