@@ -44,4 +44,9 @@ app.use("/api/v1/users/claim",claimRouter);
 import policyRoutes from "./routes/policyRoutes.js"
 app.use("/api/v1/users/ai-policy",policyRoutes);
 
+// Admin Router 
+import adminRouter from "./routes/admin.routes.js"; 
+app.use("/api/v1/admin",adminRouter);
+
+
 export{app};
