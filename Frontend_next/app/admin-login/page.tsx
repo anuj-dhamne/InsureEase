@@ -10,14 +10,31 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import { toast } from "react-toastify";
+import axios from "axios"
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false); 
   const router = useRouter()
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async(e: React.FormEvent) => {
     e.preventDefault()
+
+    try {
+      setLoading(true);
+      const response = await axios.post("http://localhost:4000/api/v1/admin/register", {
+        email,password
+      });
+      toast.success("Registration successful! Redirecting...");
+      router.push("/admin-dashboard");
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Registration failed.");
+    } finally {
+      setLoading(false);
+    }
+
     // Here you would typically handle the login logic
     console.log(`Logging in admin with email: ${email}`)
     // For demo purposes, we'll just redirect to the admin dashboard

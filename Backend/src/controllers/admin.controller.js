@@ -25,7 +25,7 @@ const generateAccessAndRefreshToken=async(adminId)=>{
     }
 }
 
-const userRegister=asyncHandler(async (req,res)=>{
+const adminRegister=asyncHandler(async (req,res)=>{
 
     // getting user data
     const {companyName,email,phone,password,address,termsAndConditions,insuranceTypes}=req.body;
@@ -69,10 +69,10 @@ const userRegister=asyncHandler(async (req,res)=>{
         throw new ApiError(500,"Something went wrong while regestring the admin !")
     }
     // return responses
-    return res.status(201).json(new ApiResponse(200,createdUser,"Admin Created Successfully !"));
+    return res.status(201).json(new ApiResponse(200,createdAdmin,"Admin Created Successfully !"));
 })
 
-const loginUser=asyncHandler(async (req,res)=>{
+const loginAdmin=asyncHandler(async (req,res)=>{
  const {email,password}=req.body;
  if(!email){
     throw new ApiError(400,"Username required ! ")
@@ -106,7 +106,7 @@ const loginUser=asyncHandler(async (req,res)=>{
  .status(201)
  .cookie("accessToken",accessToken,options)
  .cookie("refreshToken",refreshToken,options)
- .json(new ApiResponse(201,{admin:loggedUser,accessToken,refreshToken},"Loggedin Successfull !"))
+ .json(new ApiResponse(201,{admin:loggedAdmin,accessToken,refreshToken},"Loggedin Successfull !"))
 })
 
 const logoutUser=asyncHandler(async(req,res)=>{
@@ -227,11 +227,10 @@ const changeCurrentPassword=asyncHandler(async (req,res)=>{
 
 //  })
 
-export {userRegister,
-    loginUser,
+export {adminRegister,
+    loginAdmin,
     logoutUser,
     updateAccountDetails,
-    updateAvator,
     getCurrentUser,
     changeCurrentPassword,
     refreshAccessToken
