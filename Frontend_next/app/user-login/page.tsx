@@ -12,12 +12,13 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { log } from "console"
 import axios from "axios"
+import useAuth from "@/context/store"
 
 export default function UserLoginPage() {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const router = useRouter()
-
+  const { useAuthlogin } = useAuth()
   const handleLogin = async(e: React.FormEvent) => {
     e.preventDefault()
 
@@ -27,6 +28,7 @@ export default function UserLoginPage() {
         password
       })
       console.log("Response : ",res);
+      useAuthlogin(res.data.data.user)
     } catch (error) {
       console.log("error",error);
     }
