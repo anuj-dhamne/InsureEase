@@ -1,5 +1,7 @@
 "use client"
 
+import { useEffect} from "react"
+import axios from "axios"
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -48,16 +50,48 @@ const users = [
   { id: 5, name: "Michael Wilson", email: "michael@example.com", policies: 2, joined: "2023-05-15" },
 ]
 
-const policies = [
-  { id: 1, name: "Health Gold Plan", category: "Health", subscribers: 245, revenue: "$29,400" },
-  { id: 2, name: "Vehicle Comprehensive", category: "Vehicle", subscribers: 189, revenue: "$15,120" },
-  { id: 3, name: "Term Life Premium", category: "Life", subscribers: 156, revenue: "$23,400" },
-  { id: 4, name: "Home Insurance Plus", category: "Home", subscribers: 112, revenue: "$13,440" },
-  { id: 5, name: "Travel Insurance Basic", category: "Travel", subscribers: 98, revenue: "$4,900" },
-]
+// const policies = [
+//   { id: 1, name: "Health Gold Plan", category: "Health", subscribers: 245, revenue: "$29,400" },
+//   { id: 2, name: "Vehicle Comprehensive", category: "Vehicle", subscribers: 189, revenue: "$15,120" },
+//   { id: 3, name: "Term Life Premium", category: "Life", subscribers: 156, revenue: "$23,400" },
+//   { id: 4, name: "Home Insurance Plus", category: "Home", subscribers: 112, revenue: "$13,440" },
+//   { id: 5, name: "Travel Insurance Basic", category: "Travel", subscribers: 98, revenue: "$4,900" },
+// ]
 
 export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState("")
+  const [policies, setPolicies] = useState([])
+  const [users, setUsers] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/api/v1/users/policies/admin-all-policies",
+          {
+            withCredentials: true, // ✅ Allows cookies to be sent with the request
+          }
+        )
+        console.log("Response in policies : ",response);
+        setPolicies(response.data.data) // Ensure backend response matches Policy[]
+      } catch (err: any) {
+        if (err.response?.status === 401) {
+          await axios.get("http://localhost:4000/api/v1/admin/refresh-token", {
+              withCredentials: true
+          });
+          window.location.reload(); // Retry after refreshing
+      }
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  if (loading) return <p>Loading...</p>
+  if (error) return <p>Error: {error}</p>
 
   return (
     <div className="container mx-auto py-8 px-4">

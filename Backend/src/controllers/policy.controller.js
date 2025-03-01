@@ -5,20 +5,20 @@ import {ApiResponse} from "../utils/ApiResponse.js"
 import { User } from "../models/user.model.js";
 
 const createPolicy= asyncHandler(async(req,res)=>{
-    const user=req.user._id;
+    const user=req.admin._id;
     // const user_data=await User.findById(user);
     // const user_name=user_data;
-    const {name,category,provider,premium,tenure,features,requiredDocuments,termsAndConditions}=req.body;
+    const {name,category,provider,premium,tenureYears,features,requiredDocuments,termsAndConditions,coverageAmount,description}=req.body;
 
-    if([name,category,provider,termsAndConditions].map((field)=>{
+    if([name,category,provider,description].map((field)=>{
         if(field.trim()===""){
             throw new ApiError(400,"All Fields are Required ! ");
         }
     }))
-    if(premium===0 || tenure===0){
-        throw new ApiError(400,"premium and tenure not ne zero");
+    if(premium===0 || tenureYears===0 ||coverageAmount===0){
+        throw new ApiError(400,"premium and tenure , coverage not ne zero");
     }
-    if(features.length<1 || requiredDocuments.length<1){
+    if(features.length<1 || requiredDocuments.length<1 ||termsAndConditions.length<1){
         throw new ApiError(400,"All Fields are Required ! ");
     }
 
@@ -28,7 +28,9 @@ const createPolicy= asyncHandler(async(req,res)=>{
         provider,
         provider_id:user,
         premium,
-        tenure,
+        tenureYears,
+        coverageAmount,
+        description,
         features,
         requiredDocuments,
         termsAndConditions,
@@ -61,7 +63,8 @@ const getAllPolicies=asyncHandler(async(req,res)=>{
 })
 
 const getPolicyofAdmin=asyncHandler(async(req,res)=>{
-    const user=req.user._id;
+    console.log(req.admin);
+    const user=req.admin._id;
     if(!user){
         throw ApiError(400,"Unauthorised request ! ");
     }
@@ -90,24 +93,24 @@ const policyId=req.params.id;
 if(!policyId){
     throw new ApiError(400,"Unauthorised request !");
 }
-const {name,premium,tenure,features,requiredDocuments,termsAndConditions} =req.body;
+const {name,premium,tenureYears,features,coverage,requiredDocuments,termsAndConditions,description} =req.body;
 
-if([name,termsAndConditions].map((field)=>{
+if([name,description].map((field)=>{
     if(field.trim()===""){
         throw new ApiError(400,"All Fields are Required ! ");
     }
 }))
-if(premium===0 || tenure===0){
+if(premium===0 || tenureYears===0 ||coverage===0){
     throw new ApiError(400,"premium and tenure not ne zero");
 }
-if(features.length<1 || requiredDocuments.length<1){
+if(features.length<1 || requiredDocuments.length<1 ||termsAndConditions.length<1){
     throw new ApiError(400,"All Fields are Required ! ");
 }
 
 const updatedPolicy=await Policy.findByIdAndUpdate(
     policyId,
     {
-        $set:{name,premium,tenure,features,requiredDocuments,termsAndConditions}
+        $set:{name,premium,tenureYears,features,requiredDocuments,termsAndConditions,coverage,description}
     },
     {
         new:true

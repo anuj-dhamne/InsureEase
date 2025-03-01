@@ -9,7 +9,7 @@ const policySchema = new mongoose.Schema({
     },
     category: {
         type: String,
-        enum: ['Health', 'Car', 'Life', 'Travel'],
+        enum: ['health', 'life','home'],
         required: true,
     },
     provider: {
@@ -20,11 +20,15 @@ const policySchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    coverageAmount:{
+        type:Number,
+        required:true,
+    },
     premium: {
         type: Number,
         required: true
     },
-    tenure: {
+    tenureYears: {
         type: Number,
         required: true
     },
@@ -34,10 +38,12 @@ const policySchema = new mongoose.Schema({
     requiredDocuments: [
         { type: String }
     ],
-    termsAndConditions: {
-        type: String,
-        required: true
-    },
+    termsAndConditions:
+    [{type: String,  }],
+    description:{
+        type:String,
+        required:true
+    }
 
 }, { timestamps: true })
 

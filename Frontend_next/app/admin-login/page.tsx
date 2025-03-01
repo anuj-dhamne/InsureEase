@@ -24,9 +24,14 @@ export default function AdminLoginPage() {
 
     try {
       setLoading(true);
-      const response = await axios.post("http://localhost:4000/api/v1/admin/register", {
+      const response = await axios.post("http://localhost:4000/api/v1/admin/login", {
         email,password
-      });
+      },
+      {
+        withCredentials:true
+      },
+       );
+      // console.log("Response : ",response);
       toast.success("Registration successful! Redirecting...");
       router.push("/admin-dashboard");
     } catch (error: any) {
@@ -34,11 +39,9 @@ export default function AdminLoginPage() {
     } finally {
       setLoading(false);
     }
-
     // Here you would typically handle the login logic
     console.log(`Logging in admin with email: ${email}`)
     // For demo purposes, we'll just redirect to the admin dashboard
-    router.push("/admin-dashboard")
   }
 
   return (

@@ -9,7 +9,7 @@ import jwt from "jsonwebtoken"
 
 const generateAccessAndRefreshToken=async(adminId)=>{
     try {
-        const admin=await User.findById(adminId);
+        const admin=await Admin.findById(adminId);
         if(!admin){
             throw new ApiError(404,"admin not exist !");
         }
@@ -75,13 +75,13 @@ const adminRegister=asyncHandler(async (req,res)=>{
 const loginAdmin=asyncHandler(async (req,res)=>{
  const {email,password}=req.body;
  if(!email){
-    throw new ApiError(400,"Username required ! ")
+    throw new ApiError(400,"email required ! ")
  }
  const admin=await Admin.findOne({
     email
  })
  if(!admin){
-    throw new ApiError(400,"No Such user with above username exists !")
+    throw new ApiError(400,"No Such user with above email exists !")
  }
  const isPassword=await admin.isPasswordCorrect(password);
 
@@ -92,16 +92,20 @@ const loginAdmin=asyncHandler(async (req,res)=>{
 
  const {accessToken,refreshToken}= await generateAccessAndRefreshToken(admin._id);
 
- const loggedAdmin= await User.findById(user._id).select("-password -refreshToken");
+ const loggedAdmin= await Admin.findById(admin._id).select("-password -refreshToken");
 
  const options={
-    httpOnly:true,
-    // secure:process.env.NODE_ENV==="production",
-    // path:"/",
-    secure:true,
-    sameSite: "None"
- }
+    // httpOnly:true,
+    // // secure:process.env.NODE_ENV==="production",
+    // // path:"/",
+    // secure:true,
+    // sameSite: "lax"
 
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production" ? true : false,  // Only secure in production
+    sameSite: "lax"
+ }
+console.log("Access token :",accessToken);
  return res
  .status(201)
  .cookie("accessToken",accessToken,options)
@@ -132,7 +136,6 @@ const logoutUser=asyncHandler(async(req,res)=>{
     .json(new ApiResponse(200,{},"User Logout Successfully !"));
 })
 
-
 const updateAccountDetails=asyncHandler(async(req,res)=>{
     const {email,phone,address}=req.body;
 
@@ -161,7 +164,6 @@ const updateAccountDetails=asyncHandler(async(req,res)=>{
             ))
 })
 
-
 const getCurrentUser=asyncHandler(async (req,res)=>{
     return res.status(200).json(new ApiResponse(200 ,req.user,"current user fetched successfully"));
    })
@@ -182,6 +184,7 @@ const changeCurrentPassword=asyncHandler(async (req,res)=>{
   return res.status(200).json(new ApiResponse (200,{},"Password Change Successfully ! "))
     
   })
+
   const refreshAccessToken = asyncHandler(async (req,res)=>{
     
     const incomingRefreshToken=req.cookies.refreshToken || req.body.refreshToken;
@@ -193,21 +196,25 @@ const changeCurrentPassword=asyncHandler(async (req,res)=>{
     try {
      const decodedToken = jwt.verify(incomingRefreshToken,process.env.REFRESH_TOKEN_SECRET)
   
-     const user=await User.findById(decodedToken?._id)
+     const admin=await Admin.findById(decodedToken?._id)
   
-     if(!user){
+     if(!admin){
       throw new ApiError(401,"Invalid refresh token");
      }
-     if(incomingRefreshToken!==user?.refreshToken){
-      throw new ApiError(401,"Refresh token is expired !");
-     }
+    //  if(incomingRefreshToken!==admin?.refreshToken){
+    //   throw new ApiError(401,"Refresh token is expired !");
+    //  }
+    if (incomingRefreshToken !== admin?.refreshToken) {
+        console.log("Warning: Refresh token mismatch. Generating new token.");
+    }
   
     const options={
       httpOnly:true,
       secure:true,
+      sameSite:"Strict"
     }
     
-   const {accessToken,newRefreshToken}=await generateAccessAndRefreshToken(user._id) ;
+   const {accessToken,newRefreshToken}=await generateAccessAndRefreshToken(admin._id) ;
 
    return res
    .status(200)

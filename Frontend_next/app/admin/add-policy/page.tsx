@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-
+import axios from "axios"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
@@ -23,23 +23,23 @@ export default function AddPolicyPage() {
     name: "",
     category: "",
     provider: "",
-    providerId: "",
+    // providerId: "",
     description: "",
     coverageAmount: "",
     premium: "",
     tenureYears: "",
-    paymentFrequency: "monthly",
+    // paymentFrequency: "monthly",
     features: [""],
     requiredDocuments: [""],
     termsAndConditions: [""],
     isPopular: false,
     status: "active",
-    minAge: "",
-    maxAge: "",
-    waitingPeriod: "",
-    deductible: "",
-    copay: "",
-    maxCoverage: "",
+    // minAge: "",
+    // maxAge: "",
+    // waitingPeriod: "",
+    // deductible: "",
+    // copay: "",
+    // maxCoverage: "",
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -81,7 +81,7 @@ export default function AddPolicyPage() {
     if (!formData.name) newErrors.name = "Policy name is required"
     if (!formData.category) newErrors.category = "Category is required"
     if (!formData.provider) newErrors.provider = "Provider is required"
-    if (!formData.providerId) newErrors.providerId = "Provider ID is required"
+    // if (!formData.providerId) newErrors.providerId = "Provider ID is required"
     if (!formData.description) newErrors.description = "Description is required"
     if (!formData.coverageAmount) newErrors.coverageAmount = "Coverage amount is required"
     if (!formData.premium) newErrors.premium = "Premium is required"
@@ -102,16 +102,27 @@ export default function AddPolicyPage() {
     if (!validateForm()) {
       return
     }
-
     setIsSubmitting(true)
 
     try {
       // Here you would typically make an API call to save the policy
       // For demo purposes, we'll simulate an API call
+      const response = await axios.post("http://localhost:4000/api/v1/users/policies/create-policy", formData, {
+        // headers: {
+        //   "Content-Type": "application/json",
+        // },
+        withCredentials:true
+      });
+  
+      if (response.status === 201) {
+        router.push("/admin/policies");
+      } else {
+        throw new Error("Unexpected response from server");
+      }
       await new Promise((resolve) => setTimeout(resolve, 2000))
 
       // Redirect to the policies list page
-      router.push("/admin/policies")
+      // router.push("/admin/policies")
     } catch (error) {
       console.error("Error saving policy:", error)
       setErrors({
@@ -188,7 +199,7 @@ export default function AddPolicyPage() {
                     {errors.provider && <p className="text-sm text-red-500">{errors.provider}</p>}
                   </div>
 
-                  <div className="space-y-2">
+                  {/* <div className="space-y-2">
                     <Label htmlFor="providerId">Provider ID</Label>
                     <Input
                       id="providerId"
@@ -198,7 +209,7 @@ export default function AddPolicyPage() {
                       className={errors.providerId ? "border-red-500" : ""}
                     />
                     {errors.providerId && <p className="text-sm text-red-500">{errors.providerId}</p>}
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="space-y-2">
@@ -261,7 +272,7 @@ export default function AddPolicyPage() {
                     {errors.tenureYears && <p className="text-sm text-red-500">{errors.tenureYears}</p>}
                   </div>
 
-                  <div className="space-y-2">
+                  {/* <div className="space-y-2">
                     <Label htmlFor="paymentFrequency">Payment Frequency</Label>
                     <Select
                       value={formData.paymentFrequency}
@@ -277,10 +288,10 @@ export default function AddPolicyPage() {
                         <SelectItem value="annual">Annual</SelectItem>
                       </SelectContent>
                     </Select>
-                  </div>
+                  </div> */}
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                {/* <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="minAge">Minimum Age</Label>
                     <Input
@@ -302,40 +313,9 @@ export default function AddPolicyPage() {
                       placeholder="Enter maximum age"
                     />
                   </div>
-                </div>
+                </div> */}
 
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="waitingPeriod">Waiting Period (days)</Label>
-                    <Input
-                      id="waitingPeriod"
-                      type="number"
-                      value={formData.waitingPeriod}
-                      onChange={(e) => handleInputChange("waitingPeriod", e.target.value)}
-                      placeholder="Enter waiting period"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="deductible">Deductible Amount</Label>
-                    <Input
-                      id="deductible"
-                      value={formData.deductible}
-                      onChange={(e) => handleInputChange("deductible", e.target.value)}
-                      placeholder="Enter deductible"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="copay">Co-pay Percentage</Label>
-                    <Input
-                      id="copay"
-                      value={formData.copay}
-                      onChange={(e) => handleInputChange("copay", e.target.value)}
-                      placeholder="Enter co-pay %"
-                    />
-                  </div>
-                </div>
+                
               </CardContent>
             </Card>
 
