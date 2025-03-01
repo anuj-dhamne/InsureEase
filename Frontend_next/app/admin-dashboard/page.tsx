@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Search, Plus, Filter, Download, RefreshCw } from "lucide-react"
 import { Input } from "@/components/ui/input"
+import Link from "next/link"
 
 const policyData = [
   { month: "Jan", newPolicies: 65, renewals: 40, cancellations: 12 },
@@ -64,7 +65,7 @@ export default function AdminDashboard() {
         <h1 className="text-4xl font-bold mb-8 text-primary">Admin Dashboard</h1>
 
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid grid-cols-4 mb-8">
+          <TabsList className="grid w-full grid-cols-4 mb-8" onClick={() => window.scrollTo(0, 0)}>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="policies">Policies</TabsTrigger>
             <TabsTrigger value="claims">Claims</TabsTrigger>
@@ -175,10 +176,12 @@ export default function AdminDashboard() {
                     <Button variant="outline" size="icon">
                       <Filter className="h-4 w-4" />
                     </Button>
-                    <Button>
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Policy
-                    </Button>
+                    <Link href="/admin/add-policy">
+                      <Button>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Policy
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               </CardHeader>

@@ -13,25 +13,30 @@ export default function ChatbotButton() {
   ])
   const [inputValue, setInputValue] = useState("")
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!inputValue.trim()) return
 
-    // Add user message
-    setMessages([...messages, { text: inputValue, isUser: true }])
+    const userMessage = { text: inputValue, isUser: true }
+    setMessages((prev) => [...prev, userMessage])
     setInputValue("")
 
-    // Simulate AI response after a short delay
-    setTimeout(() => {
-      const responses = [
-        "I can help you find the right insurance policy for your needs.",
-        "Would you like to know more about our health insurance options?",
-        "You can file a claim directly through our website or mobile app.",
-        "Our customer support team is available 24/7 to assist you.",
-        "Is there anything specific about insurance you'd like to learn more about?",
-      ]
-      const randomResponse = responses[Math.floor(Math.random() * responses.length)]
-      setMessages((prev) => [...prev, { text: randomResponse, isUser: false }])
-    }, 1000)
+    try {
+      const response = await fetch("http://localhost:5000/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query: inputValue }),
+      })
+      
+      const data = await response.json()
+      
+      const botMessage = { text: data.response, isUser: false }
+      setMessages((prev) => [...prev, botMessage])
+    } catch (error) {
+      console.error("Error communicating with chatbot API:", error)
+      setMessages((prev) => [...prev, { text: "Error connecting to server.", isUser: false }])
+    }
   }
 
   return (
@@ -113,4 +118,3 @@ export default function ChatbotButton() {
     </>
   )
 }
-
