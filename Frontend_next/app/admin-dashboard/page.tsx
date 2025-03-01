@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -59,13 +59,31 @@ const policies = [
 export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState("")
 
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
+  useEffect(() => {
+    const handleRouteChange = () => {
+      window.scrollTo(0, 0)
+    }
+
+    window.addEventListener("popstate", handleRouteChange)
+    return () => window.removeEventListener("popstate", handleRouteChange)
+  }, [])
+
   return (
     <div className="container mx-auto py-8 px-4">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
         <h1 className="text-4xl font-bold mb-8 text-primary">Admin Dashboard</h1>
 
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8" onClick={() => window.scrollTo(0, 0)}>
+          <TabsList
+            className="grid w-full grid-cols-4 mb-8"
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: "smooth" })
+            }}
+          >
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="policies">Policies</TabsTrigger>
             <TabsTrigger value="claims">Claims</TabsTrigger>

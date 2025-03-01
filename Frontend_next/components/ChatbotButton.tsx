@@ -1,10 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { MessageSquare, X, Send, Mic } from "lucide-react"
 import { Input } from "@/components/ui/input"
+import axios from "axios"
 
 export default function ChatbotButton() {
   const [isOpen, setIsOpen] = useState(false)
@@ -12,32 +13,40 @@ export default function ChatbotButton() {
     { text: "Hello! I'm your AI assistant. How can I help you with insurance today?", isUser: false },
   ])
   const [inputValue, setInputValue] = useState("")
+  const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return
 
-    const userMessage = { text: inputValue, isUser: true }
-    setMessages((prev) => [...prev, userMessage])
+    // Add user message
+    setMessages((prev) => [...prev, { text: inputValue, isUser: true }])
+    const userMessage = inputValue
     setInputValue("")
 
+    // Scroll to bottom after user message
+    setTimeout(scrollToBottom, 100)
+
     try {
-      const response = await fetch("http://localhost:5000/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ query: inputValue }),
-      })
-      
-      const data = await response.json()
-      
-      const botMessage = { text: data.response, isUser: false }
-      setMessages((prev) => [...prev, botMessage])
+      // Send user input to backend
+      const response = await axios.post("http://localhost:5000/chat", { query: userMessage })
+      setMessages((prev) => [...prev, { text: response.data.response, isUser: false }])
     } catch (error) {
-      console.error("Error communicating with chatbot API:", error)
-      setMessages((prev) => [...prev, { text: "Error connecting to server.", isUser: false }])
+      setMessages((prev) => [...prev, { text: "Error: Unable to connect to the chatbot server.", isUser: false }])
+    }
+
+    // Scroll to bottom after receiving response
+    setTimeout(scrollToBottom, 100)
+  }
+
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
     }
   }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
 
   return (
     <>
@@ -70,7 +79,7 @@ export default function ChatbotButton() {
               </Button>
             </div>
 
-            <div className="flex flex-col h-[calc(100%-128px)] overflow-y-auto p-4 space-y-4">
+            <div className="flex flex-col h-[calc(100%-128px)] overflow-y-auto p-4 space-y-4 scroll-smooth">
               {messages.map((message, index) => (
                 <div key={index} className={`flex ${message.isUser ? "justify-end" : "justify-start"}`}>
                   <div
@@ -90,6 +99,7 @@ export default function ChatbotButton() {
                   </div>
                 </div>
               ))}
+              <div ref={messagesEndRef} />
             </div>
 
             <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-background">
