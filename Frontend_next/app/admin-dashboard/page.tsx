@@ -99,7 +99,12 @@ export default function AdminDashboard() {
         <h1 className="text-4xl font-bold mb-8 text-primary">Admin Dashboard</h1>
 
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8" onClick={() => window.scrollTo(0, 0)}>
+          <TabsList
+            className="grid w-full grid-cols-4 mb-8"
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: "smooth" })
+            }}
+          >
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="policies">Policies</TabsTrigger>
             <TabsTrigger value="claims">Claims</TabsTrigger>

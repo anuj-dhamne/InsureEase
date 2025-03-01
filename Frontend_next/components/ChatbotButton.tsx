@@ -45,7 +45,7 @@ export default function ChatbotButton() {
         className="h-12 w-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
-        onClick={() => setIsOpen(true)}
+        onClick={() => setIsOpen((prev) => !prev)}
       >
         <MessageSquare className="h-6 w-6" />
       </motion.button>

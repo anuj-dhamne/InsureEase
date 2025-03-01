@@ -7,3 +7,8 @@ venv\Scripts\activate
 cd venv
 python app.py
 
+
+
+****voice Navigation dependencies*******
+pip install SpeechRecognition
+pip install gtts

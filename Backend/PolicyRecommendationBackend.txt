@@ -1,0 +1,11 @@
+dependencies:
+
+pip install fastapi
+pip install uvicorn
+
+check the dependencies installed:
+python -c "import fastapi; print(fastapi.__version__)"
+
+to run backend:
+
+python -m uvicorn app:app --reload

@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
-import { Calculator, DollarSign, TrendingUp, Shield } from "lucide-react"
+import { Calculator, IndianRupee, TrendingUp, Shield } from "lucide-react"
 
 export default function CalculatorsSection() {
   const [premiumInputs, setPremiumInputs] = useState({
@@ -139,9 +139,9 @@ export default function CalculatorsSection() {
                           onValueChange={(value) => setPremiumInputs({ ...premiumInputs, coverageAmount: value[0] })}
                         />
                         <div className="flex justify-between">
-                          <span className="text-sm text-muted-foreground">$50,000</span>
-                          <span className="text-sm font-medium">${premiumInputs.coverageAmount.toLocaleString()}</span>
-                          <span className="text-sm text-muted-foreground">$1,000,000</span>
+                          <span className="text-sm text-muted-foreground">₹50,000</span>
+                          <span className="text-sm font-medium">₹{premiumInputs.coverageAmount.toLocaleString()}</span>
+                          <span className="text-sm text-muted-foreground">₹1,000,000</span>
                         </div>
                       </div>
                     </div>
@@ -186,10 +186,10 @@ export default function CalculatorsSection() {
                   </div>
 
                   <div className="flex flex-col items-center justify-center p-6 bg-muted/30 rounded-lg">
-                    <DollarSign className="h-12 w-12 text-primary mb-4" />
+                    <IndianRupee className="h-12 w-12 text-primary mb-4" />
                     <h4 className="text-lg font-medium mb-2">Estimated Monthly Premium</h4>
                     {premiumResult !== null ? (
-                      <div className="text-4xl font-bold text-primary">${premiumResult}</div>
+                      <div className="text-4xl font-bold text-primary">₹{premiumResult}</div>
                     ) : (
                       <p className="text-muted-foreground text-center">
                         Adjust the sliders and click Calculate to see your estimated premium
@@ -270,10 +270,10 @@ export default function CalculatorsSection() {
                   </div>
 
                   <div className="flex flex-col items-center justify-center p-6 bg-muted/30 rounded-lg">
-                    <DollarSign className="h-12 w-12 text-primary mb-4" />
+                    <IndianRupee className="h-12 w-12 text-primary mb-4" />
                     <h4 className="text-lg font-medium mb-2">Estimated Maturity Value</h4>
                     {maturityResult !== null ? (
-                      <div className="text-4xl font-bold text-primary">${maturityResult.toLocaleString()}</div>
+                      <div className="text-4xl font-bold text-primary">₹{maturityResult.toLocaleString()}</div>
                     ) : (
                       <p className="text-muted-foreground text-center">
                         Adjust the values and click Calculate to see your estimated maturity value
@@ -390,7 +390,7 @@ export default function CalculatorsSection() {
                     <h4 className="text-lg font-medium mb-2">Risk Assessment</h4>
                     {riskResult !== null ? (
                       <div
-                        className={`text-4xl font-bold ${
+                        className={`text-4xl font-bold ₹{
                           riskResult === "Low Risk"
                             ? "text-green-500"
                             : riskResult === "Moderate Risk"
