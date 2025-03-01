@@ -10,15 +10,14 @@ interface HeroSectionProps {
 
 export default function HeroSection({ onGetStarted }: HeroSectionProps) {
   const floatingImages = [
-    { src: "/placeholder.svg", alt: "Health Insurance", width: 120, height: 120, delay: 0 },
-    { src: "/placeholder.svg", alt: "Vehicle Insurance", width: 100, height: 100, delay: 0.5 },
-    { src: "/placeholder.svg", alt: "Life Insurance", width: 90, height: 90, delay: 1 },
-    { src: "/placeholder.svg", alt: "Home Insurance", width: 110, height: 110, delay: 1.5 },
-    { src: "/placeholder.svg", alt: "Travel Insurance", width: 80, height: 80, delay: 2 },
+    { src: "/images/health-insurance.png", alt: "Health Insurance", width: 120, height: 120, delay: 0 },
+    { src: "/images/vehicle-insurance.png", alt: "Vehicle Insurance", width: 100, height: 100, delay: 0.5 },
+    { src: "/images/home-insurance.png", alt: "Home Insurance", width: 90, height: 90, delay: 1 },
+    { src: "/images/travel-insurance.png", alt: "Travel Insurance", width: 80, height: 80, delay: 2 },
   ]
 
   return (
-    <section className="relative overflow-hidden py-20 md:py-32">
+    <section className="relative overflow-hidden py-20 md:py-32 ">
       {/* Floating Images */}
       {floatingImages.map((image, index) => (
         <motion.div
