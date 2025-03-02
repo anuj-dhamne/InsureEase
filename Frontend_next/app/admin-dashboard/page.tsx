@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button"
 import { Search, Plus, Filter, Download, RefreshCw } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
-
+import { toast } from "react-toastify";
 const policyData = [
   { month: "Jan", newPolicies: 65, renewals: 40, cancellations: 12 },
   { month: "Feb", newPolicies: 59, renewals: 45, cancellations: 10 },
@@ -42,13 +42,13 @@ const claimsData = [
   { month: "Jun", submitted: 80, approved: 60, rejected: 20 },
 ]
 
-const users = [
-  { id: 1, name: "John Doe", email: "john@example.com", policies: 3, joined: "2023-01-15" },
-  { id: 2, name: "Jane Smith", email: "jane@example.com", policies: 2, joined: "2023-02-20" },
-  { id: 3, name: "Robert Johnson", email: "robert@example.com", policies: 4, joined: "2023-03-05" },
-  { id: 4, name: "Emily Davis", email: "emily@example.com", policies: 1, joined: "2023-04-10" },
-  { id: 5, name: "Michael Wilson", email: "michael@example.com", policies: 2, joined: "2023-05-15" },
-]
+// const users = [
+//   { id: 1, name: "John Doe", email: "john@example.com", policies: 3, joined: "2023-01-15" },
+//   { id: 2, name: "Jane Smith", email: "jane@example.com", policies: 2, joined: "2023-02-20" },
+//   { id: 3, name: "Robert Johnson", email: "robert@example.com", policies: 4, joined: "2023-03-05" },
+//   { id: 4, name: "Emily Davis", email: "emily@example.com", policies: 1, joined: "2023-04-10" },
+//   { id: 5, name: "Michael Wilson", email: "michael@example.com", policies: 2, joined: "2023-05-15" },
+// ]
 
 // const policies = [
 //   { id: 1, name: "Health Gold Plan", category: "Health", subscribers: 245, revenue: "$29,400" },
@@ -68,15 +68,22 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/api/v1/users/policies/admin-all-policies",
+        const responsePolicy = await axios.get("http://localhost:4000/api/v1/users/policies/admin-all-policies",
           {
             withCredentials: true, // ✅ Allows cookies to be sent with the request
           }
         )
-        console.log("Response in policies : ",response);
-        setPolicies(response.data.data) // Ensure backend response matches Policy[]
+        console.log("Response in policies : ",responsePolicy);
+        setPolicies(responsePolicy.data.data) ;
+
+        const responseUser=await axios.get("http://localhost:4000/api/v1/users/purchase/all-user-admin",{
+          withCredentials:true,
+        })
+        console.log("user of admin :",responseUser.data.data);
+        setUsers(responseUser.data.data);
+      // Ensure backend response matches Policy[]
       } catch (err: any) {
-        if (err.response?.status === 401) {
+        if (err.responsePolicy?.status === 401) {
           await axios.get("http://localhost:4000/api/v1/admin/refresh-token", {
               withCredentials: true
           });

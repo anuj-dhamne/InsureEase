@@ -2,7 +2,7 @@
   "name": "insure-ease",
   "version": "0.1.0",
   "private": true,
-  "proxy":"http://localhost:4000",
+  "proxy": "http://localhost:4000",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -27,13 +27,13 @@
     "lucide-react": "^0.476.0",
     "next": "^15.2.0",
     "next-themes": "^0.4.4",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-mic": "^12.4.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-toastify": "^11.0.5",
     "recharts": "^2.15.1",
     "tailwind-merge": "^3.0.2",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@types/node": "^20",

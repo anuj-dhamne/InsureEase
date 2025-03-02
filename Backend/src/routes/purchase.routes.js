@@ -1,6 +1,6 @@
 import {Router} from "express"
 import { verifyJWT } from "../middlewares/auth.middleware.js"
-import { approvePurchase, cancelPurchase, getAllPendingPurchases, getPurchaseDetail, getUserPurchase, purchasePolicy, rejectPurchase } from "../controllers/purchase.controller.js";
+import { allUserofAdmin, approvePurchase, cancelPurchase, getAllPendingPurchases, getPurchaseDetail, getUserPurchase, purchasePolicy, rejectPurchase } from "../controllers/purchase.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 
 const purchaseRouter=Router();
@@ -36,5 +36,6 @@ purchaseRouter.route("/approve-purchase/:id").post(verifyJWT,approvePurchase);
 // reject purchase route
 purchaseRouter.route("/reject-purchase/:id").post(verifyJWT,rejectPurchase);
 
+purchaseRouter.route("/all-user-admin").get(verifyJWT,allUserofAdmin);
 
 export default purchaseRouter;

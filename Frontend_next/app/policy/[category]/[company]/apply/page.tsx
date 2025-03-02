@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-
+import { toast } from "react-toastify"
 import { useState } from "react"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { motion } from "framer-motion"
@@ -16,13 +16,16 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { FileUploader } from "@/components/FileUploader"
 import { CheckCircle, ChevronLeft, ChevronRight, FileText, Info } from "lucide-react"
 
+import axios from "axios"
+
+
 export default function ApplyPage() {
   const params = useParams()
   const router = useRouter()
   const searchParams = useSearchParams()
   const { category, company } = params
   const policyId = searchParams.get("policy")
-
+const [newFormData,setNewFormData]=useState([]);
   const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useState({
     // Personal Information
@@ -64,21 +67,26 @@ export default function ApplyPage() {
   const [files, setFiles] = useState<File[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  
 
   const handleInputChange = (field: string, value: string | boolean | File | null | File[]) => {
-    setFormData({
-      ...formData,
+    setNewFormData({
+      ...newFormData,
       [field]: value,
     })
+    console.log("new form data",newFormData);
   }
 
   const handleFileUpload = (newFiles: File[]) => {
-    setFiles([...files, ...newFiles])
-    setFormData({
-      ...formData,
-      additionalDocuments: [...files, ...newFiles],
-    })
-  }
+    setFiles((prevFiles) => {
+      const updatedFiles = [...prevFiles, ...newFiles]; // Ensure correct order
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        additionalDocuments: updatedFiles, // Update formData correctly
+      }));
+      return updatedFiles;
+    });
+  };
 
   const handleNextStep = () => {
     setCurrentStep(currentStep + 1)
@@ -90,20 +98,41 @@ export default function ApplyPage() {
     window.scrollTo(0, 0)
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false)
-      setIsSubmitted(true)
-    }, 2000)
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log(newFormData);
+    console.log("policy id :",policyId);
+    try {
+      const response = await axios.post(
+        `http://localhost:4000/api/v1/policies/purchase/${policyId}`, // Pass policyId in URL
+        newFormData,
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      console.log("Response : ",response.data);
+  
+    } catch (error) {
+      console.log("error : ",error)
+    }
+    setIsSubmitting(true);
+    
   }
 
   const handleGoToConfirmation = () => {
     router.push("/policy/confirmation")
   }
+
+  const handleFileChange = (e:Event) => {
+    const selectedFile = e.target.files[0];
+  
+    if (!selectedFile) return; // Ensure a file is selected
+  
+    setNewFormData((prev) => [...prev, selectedFile]);
+  
+    console.log("Selected File:", selectedFile);
+  };
 
   return (
     <div className="container mx-auto py-12 px-4">
@@ -145,7 +174,7 @@ export default function ApplyPage() {
               <Button variant="ghost" className="mb-4" onClick={() => router.back()}>
                 <ChevronLeft className="mr-2 h-4 w-4" /> Back
               </Button>
-
+              
               <h1 className="text-3xl font-bold mb-2">Apply for Insurance</h1>
               <p className="text-muted-foreground mb-6">
                 Complete the application form below to apply for your selected insurance policy.
@@ -497,6 +526,7 @@ export default function ApplyPage() {
                             acceptedFileTypes={[".pdf", ".jpg", ".jpeg", ".png"]}
                             maxFileSizeMB={5}
                           />
+                          <input type="file" name="" id="" onChange={handleFileChange}  />
                         </div>
                       </div>
 
@@ -510,11 +540,15 @@ export default function ApplyPage() {
                             </p>
                           </div>
                           <FileUploader
-                            onFilesSelected={(files) => handleInputChange("proofOfIncome", files[0])}
+                            onFilesSelected={(files) => { if (files.length > 0) {
+                              handleInputChange("proofOfIncome", files[0]); // Only update if a file is selected
+                            }
+                          }}
                             maxFiles={1}
                             acceptedFileTypes={[".pdf", ".jpg", ".jpeg", ".png"]}
                             maxFileSizeMB={5}
                           />
+                            <input type="file" name="" id="" onChange={handleFileChange}  />
                         </div>
                       </div>
 
@@ -553,7 +587,7 @@ export default function ApplyPage() {
                         </div>
                       )}
 
-                      <div className="space-y-4 pt-4">
+                      {/* <div className="space-y-4 pt-4">
                         <div className="flex items-start space-x-2">
                           <Checkbox
                             id="agreeToTerms"
@@ -600,7 +634,7 @@ export default function ApplyPage() {
                             </p>
                           </div>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   )}
                 </form>
@@ -619,7 +653,7 @@ export default function ApplyPage() {
                     Next <ChevronRight className="ml-2 h-4 w-4" />
                   </Button>
                 ) : (
-                  <Button onClick={handleSubmit} disabled={isSubmitting || !formData.agreeToTerms}>
+                  <Button onClick={handleSubmit} >
                     {isSubmitting ? "Submitting..." : "Submit Application"}
                   </Button>
                 )}

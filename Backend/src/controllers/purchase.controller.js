@@ -216,11 +216,20 @@ const rejectPurchase = asyncHandler(async (req, res) => {
 
     // Send response
     res.status(200).json(new ApiResponse(200, purchase, "Purchase request rejected successfully"));
+});
+const allUserofAdmin=asyncHandler(async(req,res)=>{
+    const adminId=req.admin._id;
+    const users=await Purchase.find(adminId).select("");
+    if(!users){
+        throw new ApiError(400,"error in users");
+    }
+    console.log("users",users);
+    return res.status(200).json(200,users,"All users of admin");
 })
 
 
 
 export {
     purchasePolicy, getUserPurchase, getPurchaseDetail, cancelPurchase, getAllPendingPurchases,
-    approvePurchase, rejectPurchase, makePayment
+    approvePurchase, rejectPurchase, makePayment,allUserofAdmin
 };

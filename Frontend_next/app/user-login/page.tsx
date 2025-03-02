@@ -26,6 +26,8 @@ export default function UserLoginPage() {
       const res= await axios.post("http://localhost:4000/api/v1/users/login",{
         username,
         password
+      },{
+        withCredentials:true
       })
       console.log("Response : ",res);
       useAuthlogin(res.data.data.user)
