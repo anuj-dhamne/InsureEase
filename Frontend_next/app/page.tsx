@@ -10,6 +10,7 @@ import AboutSection from "@/components/AboutSection"
 import RewardsSection from "@/components/RewardsSection"
 import PolicyRecommendationForm from "@/components/PolicyRecommendationForm"
 import Footer from "@/components/Footer"
+import PdfSummarizerFrontend from "@/components/ui/PdfSummarizerFrontend" // Import PDF Summarizer component
 
 export default function Home() {
   const [showRecommendationForm, setShowRecommendationForm] = useState(false)
@@ -43,10 +44,10 @@ export default function Home() {
       <CalculatorsSection />
       <AboutSection />
       <RewardsSection />
+      <PdfSummarizerFrontend /> {/* Include the PDF Summarizer component */}
       <div className="w-full">
         <Footer />
       </div>
     </div>
   )
 }
-
