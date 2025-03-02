@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Award, CheckCircle, Clock, Star, Users, Phone, Mail, ArrowRight } from "lucide-react"
+import { useEffect } from "react"
 
 // Sample company data - in a real app, this would come from a database or API
 const companyData = {
@@ -335,7 +336,9 @@ export default function CompanyPage() {
   }
 
   const handleApplyNow = (policyId: string) => {
-    router.push(`/policy/${category}/${company}/apply?policy=${policyId}`)
+    policyId=company;
+    console.log("policy id",policyId);
+    router.push(`/policy/${category}/${policyId}/apply`)
   }
 
   return (
@@ -581,4 +584,3 @@ function Globe(props: any) {
     </svg>
   )
 }
-

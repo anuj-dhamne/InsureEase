@@ -6,6 +6,7 @@ import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ChevronRight, Star, Shield, Award, CheckCircle } from "lucide-react"
+import { useEffect, useState } from "react"
 
 // Insurance category data
 const categoryData = {
@@ -365,7 +366,17 @@ const categoryData = {
 
 export default function CategoryPage() {
   const params = useParams()
-  const category = params.category as string
+  const category = params?.category as string
+  const [policies, setPolicies] = useState<any[]>([])
+
+  useEffect(()=> {
+    const fetchData = async () => {
+      const response = await fetch(`http://localhost:4000/api/v1/users/policies/all-policies`)
+      const data = await response.json()
+      setPolicies(data.data)
+    }
+    fetchData()
+  } , [])
 
   // Get category data or default to health if not found
   const currentCategory = categoryData[category as keyof typeof categoryData] || categoryData.health
@@ -384,9 +395,9 @@ export default function CategoryPage() {
         <div className="mb-10">
           <h2 className="text-2xl font-bold mb-6">Top Insurance Providers</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {currentCategory.companies.map((company) => (
+            {policies.map((company) => (
               <motion.div key={company.id} whileHover={{ y: -5 }} transition={{ duration: 0.2 }}>
-                <Link href={`/policy/${category}/${company.id}`}>
+                <Link href={`/policy/${category}/${company._id}`}>
                   <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow">
                     <CardContent className="p-6">
                       <div className="flex items-center gap-4 mb-4">
@@ -484,4 +495,3 @@ export default function CategoryPage() {
     </div>
   )
 }
-

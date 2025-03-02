@@ -24,8 +24,20 @@ export default function ApplyPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { category, company } = params
-  const policyId = searchParams.get("policy")
-const [newFormData,setNewFormData]=useState([]);
+  
+  // Fix: company parameter is actually the policy ID in the URL
+  const policyId = company as string
+
+  // Initialize newFormData as an object
+  const [newFormData, setNewFormData] = useState<{
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phone?: string;
+    // ... add other form fields as needed
+    files?: File[];
+  }>({});
+
   const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useState({
     // Personal Information
@@ -70,22 +82,15 @@ const [newFormData,setNewFormData]=useState([]);
   
 
   const handleInputChange = (field: string, value: string | boolean | File | null | File[]) => {
-    setNewFormData({
-      ...newFormData,
+    setNewFormData((prev) => ({
+      ...prev,
       [field]: value,
-    })
-    console.log("new form data",newFormData);
-  }
+    }));
+    console.log("new form data", newFormData);
+  };
 
   const handleFileUpload = (newFiles: File[]) => {
-    setFiles((prevFiles) => {
-      const updatedFiles = [...prevFiles, ...newFiles]; // Ensure correct order
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        additionalDocuments: updatedFiles, // Update formData correctly
-      }));
-      return updatedFiles;
-    });
+    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
   };
 
   const handleNextStep = () => {
@@ -100,38 +105,69 @@ const [newFormData,setNewFormData]=useState([]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(newFormData);
-    console.log("policy id :",policyId);
+    
+    if (!policyId) {
+      toast.error("No policy selected");
+      router.push(`/policy/${category}`);
+      return;
+    }
+
+    setIsSubmitting(true);
+
     try {
+      // Create FormData instance
+      const formData = new FormData();
+      
+      // Append all non-file form data
+      Object.entries(newFormData).forEach(([key, value]) => {
+        if (key !== 'files') {
+          formData.append(key, value as string);
+        }
+      });
+      
+      // Append files with the correct field name "files"
+      if (files && files.length > 0) {
+        files.forEach((file) => {
+          formData.append("files", file);
+        });
+      }
+
       const response = await axios.post(
-        `http://localhost:4000/api/v1/policies/purchase/${policyId}`, // Pass policyId in URL
-        newFormData,
+        `http://localhost:4000/api/v1/users/purchase/purchase-policy/${policyId}`,
+        formData,
         {
           withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: { 
+            "Content-Type": "multipart/form-data"
+          },
         }
       );
-      console.log("Response : ",response.data);
-  
-    } catch (error) {
-      console.log("error : ",error)
+      
+      if (response.data.success) {
+        toast.success("Application submitted successfully");
+        setIsSubmitted(true);
+      } else {
+        toast.error(response.data.message || "Failed to submit application");
+      }
+    } catch (error: any) {
+      console.error("Error submitting application:", error);
+      toast.error(error.response?.data?.message || "Failed to submit application");
+    } finally {
+      setIsSubmitting(false);
     }
-    setIsSubmitting(true);
-    
-  }
+  };
 
   const handleGoToConfirmation = () => {
     router.push("/policy/confirmation")
   }
 
-  const handleFileChange = (e:Event) => {
-    const selectedFile = e.target.files[0];
-  
-    if (!selectedFile) return; // Ensure a file is selected
-  
-    setNewFormData((prev) => [...prev, selectedFile]);
-  
-    console.log("Selected File:", selectedFile);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = e.target.files;
+    
+    if (!selectedFiles) return;
+
+    const newFiles = Array.from(selectedFiles);
+    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
   };
 
   return (
@@ -526,7 +562,7 @@ const [newFormData,setNewFormData]=useState([]);
                             acceptedFileTypes={[".pdf", ".jpg", ".jpeg", ".png"]}
                             maxFileSizeMB={5}
                           />
-                          <input type="file" name="" id="" onChange={handleFileChange}  />
+                          <input type="file" name="files" id="" onChange={handleFileChange}  />
                         </div>
                       </div>
 
@@ -665,4 +701,3 @@ const [newFormData,setNewFormData]=useState([]);
     </div>
   )
 }
-
