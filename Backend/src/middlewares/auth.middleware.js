@@ -1,60 +1,56 @@
+import jwt from "jsonwebtoken";
 import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import jwt from "jsonwebtoken";
 
+const verifyJWT = asyncHandler(async (req, res, next) => {
+    try {
+        // Extract token from either Cookies or Authorization Header
+        const token = req.cookies?.accessToken || req.header("Authorization")?.split(" ")[1];
 
-const verifyJWT=asyncHandler(async (req,res,next)=>{
+        if (!token) {
+            console.warn("🔴 JWT Token Missing"); // Debugging
+            throw new ApiError(401, "Access token missing. Please log in.");
+        }
 
-// try {
-//     const token=req.cookies?.accessToken || req.header("Authorization")?.split(" ")[1];
-//     console.log("Token Received : ",token);
-//     console.log("Access Token Received:", req.cookies.accessToken);
-//     console.log("Authorization Header:", req.headers.authorization);
+        console.log("🟢 Received Token:", token); // Debugging
 
-//     // console.log("Using secret:", process.env.ACCESS_TOKEN_SECRET);
-//     // const decoded = jwt.decode(token, { complete: true });
-//     // console.log("Decoded token:", decoded);
-//     // console.log("Raw token:", `"${token}"`);  // Ensure no spaces
+        // Verify JWT token
+        const secret = process.env.ACCESS_TOKEN_SECRET;
+        if (!secret) {
+            console.error("⚠️ ACCESS_TOKEN_SECRET is missing in .env file.");
+            throw new ApiError(500, "Server error: Authentication secret not found.");
+        }
 
-//     if(!token){
-//         throw new ApiError(401,"Unauthorised request !");
-//     }
-    
-//     const decodedToken =jwt.verify(token,process.env.ACCESS_TOKEN_SECRET)
-//     console.log("Decoded token:", decodedToken);
+        const decodedToken = jwt.verify(token, secret);
+        console.log("🟢 Decoded Token:", decodedToken); // Debugging
 
-//     const user =await User.findById(decodedToken._id).select("-password -refreshToken")
-//     if(!user){
-//         throw new ApiError(401,"Invalid Access token");
-//     }
-//     req.user=user;
-//     next();
-// } catch (error) {
-//     console.error("JWT Error:", error.message);
-//     throw new ApiError(401,error?.message||"Invalid access Token ");
-// }
+        // Validate user from DB (Optional: Add this only if needed)
+        const user = await User.findById(decodedToken._id);
+        if (!user) {
+            throw new ApiError(401, "User not found. Authentication failed.");
+        }
 
-try {
-    // console.log(req);
-    console.log("cookies : ",req.cookies);
-        const token=req.cookies?.accessToken || req.header("Authorization")?.split(" ")[1];
-    console.log("Access Token to Verify:", token);
-    console.log("JWT Secret Key:", process.env.ACCESS_TOKEN_SECRET);
-    
-    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    console.log("Decoded token:", decodedToken);
-       
-    req.admin=decodedToken;
-    next();
-} catch (error) {
-    console.log("JWT Verification Error:", error.message);
-    throw new ApiError(401, error.message);  // Print actual error message
-}
+        // Attach user details to the request object
+        req.user = {
+            _id: user._id,
+            email: user.email,
+            username: user.username,
+            role: decodedToken.role || user.role, // Ensure role exists
+        };
 
-})
+        next();
+    } catch (error) {
+        console.error("🔴 JWT Verification Error:", error.message);
 
+        if (error.name === "TokenExpiredError") {
+            throw new ApiError(401, "Session expired. Please log in again.");
+        } else if (error.name === "JsonWebTokenError") {
+            throw new ApiError(401, "Invalid token. Authentication failed.");
+        } else {
+            throw new ApiError(401, "Authentication failed.");
+        }
+    }
+});
 
-
-
-export {verifyJWT}
+export { verifyJWT };
